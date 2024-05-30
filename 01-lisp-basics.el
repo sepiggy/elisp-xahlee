@@ -195,3 +195,89 @@
 
 (string-equal "abc" 'abc)
 ;; => t
+
+(equal 3 3)
+;; => t
+
+(equal 3.0 3.0)
+;; => t
+
+(equal 3 3.0)
+;; => nil
+
+(equal '(3 4 5) '(3 4 5))
+;; => t
+
+(equal '(3 4 5) '(3 4 "5"))
+;; => nil
+
+(equal "e" "e")
+;; => t
+
+(equal 'abc 'abc)
+;; => t
+
+(eq 'x 'x)
+;; => t
+
+(eq 2 2)
+;; => t
+
+(let (aa bb)
+  (setq aa '(3 4))
+  (setq bb '(3 4))
+  (eq aa bb))
+;; => nil
+
+(let (aa bb)
+  (setq aa '(3 4))
+  (setq bb aa)
+  (eq aa bb))
+;; => t
+
+(not (equal 3 4))
+;; => t
+
+;;; Variable
+
+(setq x 3)
+;; => t
+(equal x 3)
+;; => t
+
+(equal
+ (setq xa 1 xb 2 xc 3)
+ 3)
+;; => t
+
+(equal
+ (setq xa 1
+       xb (+ xa 3))
+ 5)
+;; => nil
+
+(let (a b)
+  (setq a 3)
+  (setq b 4)
+  (+ a b))
+;; => 7
+
+(let ((a 3) (b 4))
+  (+ a b))
+;; => 7
+
+(equal
+ (let* ((xa 3)
+        (xb xa))
+   xb
+   )
+ 3)
+;; => t
+
+
+;;; Conditionals
+
+(progn
+  (message "aa")
+  (message "bb"))
+;; => bb
