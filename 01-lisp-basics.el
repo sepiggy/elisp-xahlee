@@ -7,7 +7,7 @@
 (message "Name is: %s" "Joe")
 ;; => Name is: Joe
 
-(insert "something")somethingsomething
+(insert "something")somethingsomethingsomethingsomething
 ;; => nil
 
 (warn "Name is: %s" "Joe")
@@ -281,3 +281,297 @@
   (message "aa")
   (message "bb"))
 ;; => bb
+
+(if (< 1 2)
+    (progn
+      (message "a1")
+      (message "a2"))
+    (progn
+      (message "b1")
+      (message "b2")))
+;; => a2
+
+(if (< 3 2)
+    (progn 8)
+  (progn 7))
+;; => 7
+
+(if (< 3 2)
+    (progn 8))
+;; => nil
+
+;;; Loop
+
+(let ((x 0))
+  (while (< x 4)
+    (print (format "number is %d" x))
+    (setq x (1+ x))))
+;; => nil
+
+(let ((xx '(a b c)))
+  (while xx
+    (print (format "%s" (pop xx)))
+    (sleep-for 1)))
+;; => nil
+
+(let (xx ii)
+  (setq xx [0 1 2 3 4 5])
+  (setq ii 0)
+
+  (while (< ii (length xx))
+    (insert (format "%d" (aref xx ii)))
+    (setq ii (1+ ii))))
+
+(dotimes (i 4)
+  (insert (number-to-string i)))
+
+;;; Lisp Data Structure
+
+(eq nil '())
+;; => t
+
+(eq nil (list))
+;; => t
+
+(length '(3 4))
+;; => 2
+
+(make-vector 3 0)
+;; => [0 0 0]
+
+(let ((xx 3))
+  (vector 1 2 xx))
+;; => [1 2 3]
+
+(setq xx [3 yy 5])
+;; => [3 yy 5]
+
+(aref xx 1)
+;; => yy
+
+(symbolp (aref xx 1))
+;; => t
+
+(setq xx [3 4 5])
+;; => [3 4 5]
+
+(fillarray xx 1)
+;; => [1 1 1]
+
+xx
+;; => [1 1 1]
+
+(fillarray [3 4 5] 1)
+;; => [1 1 1]
+
+(length [7 4 5])
+;; => 3
+
+(aref ["a" "b" "x"] 0)
+;; => a
+
+(let ((xx ["3" "4" "5"]))
+  (aset xx 0 "b")
+  (print (format "%s" xx)))
+;; => [b 4 5]
+
+(setq xx
+      #s(hash-table
+          size 30
+          test equal
+          data (
+                "aa" 3
+                "bb" 9
+                "cc" 5)))
+;; => #s(hash-table size 30 test equal rehash-size 1.5 rehash-threshold 0.8125 data (aa 3 bb 9 cc 5))
+
+(gethash "aa" xx)
+;; => 3
+
+(setq xx (make-hash-table :test 'equal))
+;; => #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data ())
+
+(puthash 'aa 9 xx)
+;; => 9
+
+(setq xx (make-hash-table))
+;; => #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data ())
+
+(puthash 'aa 9 xx)
+;; => 9
+
+(puthash 'bb 10 xx)
+;; => 10
+
+(remhash 'aa xx)
+;; => nil
+
+xx
+;; => #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (bb 10))
+
+(defun mkug-print-hash-table (hash-table)
+  "Print the contents of HASH-TABLE."
+  (maphash (lambda (key value)
+             (print (format "Key: %s, Value: %s" key value)))
+           hash-table))
+;; => mkug-print-hash-table
+
+(mkug-print-hash-table xx)
+;; => nil
+
+(let ((xx (make-hash-table :test 'equal)))
+  (puthash 'aa 9 xx)
+  (gethash 'bb xx)
+  (gethash 'bb xx 10)
+  )
+;; => 10
+
+
+(let (xx)
+  (setq xx (make-hash-table :test 'equal))
+  (puthash "aa" 19 xx)
+  (puthash "bb" 20 xx)
+  (puthash "dd" 17 xx)
+  (puthash "cc" 21 xx)
+  (maphash
+   (lambda (k v)
+     (princ (format "%s, %s" k v))
+     (princ "\n"))
+   xx))
+;; => nil
+
+(let (xx)
+  (setq xx
+        #s(hash-table
+            size 30
+            test equal
+            data (
+                  "aa" 3
+                  "bb" 9
+                  "cc" 5
+                  )))
+  (require 'subr-x)
+  (hash-table-keys xx))
+;; => (cc bb aa)
+
+(let (xx)
+  (setq xx
+        #s(hash-table
+            size 30
+            test equal
+            data (
+                  "aa" 3
+                  "bb" 9
+                  "cc" 5
+                  )))
+  (require 'subr-x)
+  (hash-table-values xx))
+;; => (5 9 3)
+
+;;; Function
+
+(defun ff ()
+  "print yay"
+  (princ "Yay!"))
+;; => ff
+
+(ff)
+;; => Yay!
+
+(defun gg (x)
+  "add two"
+  (+ x 2))
+;; => gg
+
+(gg 100)
+;; => 102
+
+(defun ff (x y)
+  "add x and y"
+  (+ x y))
+;; => ff
+
+(ff 100 200)
+;; => 300
+
+(defun ff (aa bb &optional cc dd)
+  "test optional params"
+  (interactive)
+  (message "%s %s %s %s" aa bb cc dd))
+;; => ff
+
+(ff 1 2)
+;; => 1 2 nil nil
+
+(ff 1 2 3)
+;; => 1 2 3 nil
+
+(ff 1 2 3 4)
+;; => 1 2 3 4
+
+(defun ff (aa bb &rest cc)
+  "test rest arguments"
+  (message "%s" cc))
+;; => ff
+
+(ff "1" "2" "3" "4")
+;; => (3 4)
+
+((lambda (x)
+   (let (a b c)
+     (setq a 1)
+     (setq b 2)
+     (setq c 3)
+     (list a b c x))) 100)
+;; => (1 2 3 100)
+
+((lambda (x)
+   (1+ x)) 3)
+;; => 4
+
+(mapcar
+ (lambda (x) (aref x 1))
+ [[1 2] [3 4] [5 6]])
+;; => (2 4 6)
+
+(fset 'f1 (lambda (y) "add 1 to arg" (1+ y)))
+;; => (lambda (y) add 1 to arg (1+ y))
+
+(f1 2)
+;; => 3
+
+;;; Lisp Symbol
+
+(set (quote x) 3)
+;; => 3
+
+(setq x 3)
+;; => 3
+
+(setq x 4)
+;; => 4
+
+(defun evaluate (x)
+  (eval x))
+;; => evaluate
+
+(evaluate '(+ 1 2))
+;; => 3
+
+(evaluate '(quote (+ 1 2)))
+;; => (+ 1 2)
+
+(fboundp 'setq)
+;; => t
+
+(fboundp 'xyz)
+;; => nil
+
+(boundp 'tab-width)
+;; => t
+
+(boundp 'xyz)
+;; => nil
+
+(featurep 'dired)
+;; => t
